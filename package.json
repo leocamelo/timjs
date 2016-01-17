@@ -1,0 +1,21 @@
+{
+  "name": "timjs",
+  "version": "0.0.1",
+  "description": "A tiny library for generate html strings",
+  "author": "Leonardo Camelo <leonardocamelo.nave@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leonardocamelo/timjs.git"
+  },
+  "keywords": [
+    "tim",
+    "html",
+    "javascript"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.1"
+  }
+}
