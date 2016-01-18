@@ -1,4 +1,4 @@
-window['Tim'] = (function(){
+window.Tim = (function(){
   function isObject(a){
     return typeof a == 'object';
   }
