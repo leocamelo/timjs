@@ -1,11 +1,9 @@
-var Tim = (function(){
+window['Tim'] = (function(){
   function isObject(a){
     return typeof a == 'object';
   }
 
   function merge(a, b){
-    a = a || {};
-    b = b || {};
     var c = {};
     for(var i in a){
       c[i] = a[i];
@@ -40,12 +38,15 @@ var Tim = (function(){
   var Tim = function(options){
     if(isObject(options)){
       var defaults = _defaults;
+
       if(options.framework){
         defaults = merge(defaults, _fwDefaults[options.framework] || {});
       }
+
       if(isObject(options.defaults)){
         defaults = merge(defaults, options.defaults);
       }
+
       this.options = merge(options, { defaults: defaults });
     }else{
       this.options = { defaults: _defaults };
@@ -53,13 +54,11 @@ var Tim = (function(){
   };
 
   Tim.prototype.tag = function(tag, props){
-    tag = tag || 'br';
     props = merge(this.options.defaults[tag], props);
     return '<' + tagWithProps(tag, props) + '>';
   };
 
   Tim.prototype.contentTag = function(tag, props, content){
-    tag = tag || 'div';
     props = merge(this.options.defaults[tag], props);
     return '<' + tagWithProps(tag, props) + '>' + (content || '') + '</' + tag + '>';
   };
