@@ -3,6 +3,10 @@ window.Tim = (function(){
     return typeof a == 'object';
   }
 
+  function isArray(a){
+    return a.constructor == Array;
+  }
+
   function merge(a, b){
     var c = {};
     for(var i in a){
@@ -16,7 +20,7 @@ window.Tim = (function(){
 
   function tagWithProps(tag, props){
     for(var i in props){
-      tag += ' ' + i + '="' + props[i] + '"';
+      tag += ' ' + i + '="' + (isArray(props[i]) ? props[i].join(' ') : props[i]) + '"';
     }
     return tag;
   }
@@ -92,7 +96,7 @@ window.Tim = (function(){
   };
 
   Tim.prototype.fa = function(icon, extras){
-    extras = extras && extras.constructor === Array ? ' fa-' + extras.join('fa-') : '';
+    extras = extras && isArray(extras) ? ' fa-' + extras.join('fa-') : '';
     return this.i({ class: 'fa fa-' + icon + extras });
   }
 
