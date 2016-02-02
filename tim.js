@@ -87,5 +87,13 @@ window.Tim = (function(){
     return this.contentTag('a', props, content);
   };
 
+  Tim.prototype.i = function(props, content){
+    return this.contentTag('i', props, content);
+  };
+
+  Tim.prototype.fa = function(icon){
+    return this.i({ class: 'fa fa-' + icon });
+  }
+
   return Tim;
 }());
