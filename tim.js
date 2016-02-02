@@ -91,8 +91,9 @@ window.Tim = (function(){
     return this.contentTag('i', props, content);
   };
 
-  Tim.prototype.fa = function(icon){
-    return this.i({ class: 'fa fa-' + icon });
+  Tim.prototype.fa = function(icon, extras){
+    extras = extras && extras.constructor === Array ? ' fa-' + extras.join('fa-') : '';
+    return this.i({ class: 'fa fa-' + icon + extras });
   }
 
   return Tim;
