@@ -91,6 +91,10 @@ window.Tim = (function(){
     return this.contentTag('a', props, content);
   };
 
+  Tim.prototype.span = function(props, content){
+    return this.contentTag('span', props, content);
+  };
+
   Tim.prototype.i = function(props, content){
     return this.contentTag('i', props, content);
   };
