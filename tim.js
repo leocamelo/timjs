@@ -71,6 +71,20 @@ window.Tim = (function(){
     return this.contentTag('div', props, content);
   };
 
+  Tim.prototype.ul = function(props, content){
+    if(isArray(content)){
+      for(var i = 0, l = content.length; i < l; i++){
+        content[i] = this.li({}, content[i]);
+      }
+      content = content.join('');
+    }
+    return this.contentTag('div', props, content);
+  };
+
+  Tim.prototype.li = function(props, content){
+    return this.contentTag('li', props, content);
+  };
+
   Tim.prototype.form = function(props, content){
     return this.contentTag('form', props, content);
   };
