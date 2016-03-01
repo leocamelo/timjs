@@ -114,8 +114,8 @@ var Tim = (function(){
 
   Tim.prototype.optionsForSelect = function(options){
     for(var i = 0, l = options.length; i < l; i++){
-      options[i] = _isArray(options[i]) ? this.option({ value: options[i][0] },
-        options[i][1]) : this.option({ value: options[i] }, options[i]);
+      options[i] = _isArray(options[i]) ? this.option({ value: options[i][1] },
+        options[i][0]) : this.option({ value: options[i] }, options[i]);
     }
     return options.join('');
   };
