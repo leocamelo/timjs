@@ -1,124 +1,127 @@
-window.Tim = (function(){
-  function isObject(a){
+var Tim = (function(){
+  function _isObject(a){
     return typeof a == 'object';
   }
 
-  function isArray(a){
-    return a.constructor == Array;
+  function _isArray(a){
+    return a && a.constructor == Array;
   }
 
-  function merge(a, b){
+  function _merge(a, b){
     var c = {};
     for(var i in a){
       c[i] = a[i];
     }
     for(var i in b){
-      c[i] = isObject(c[i]) ? merge(c[i], b[i]) : b[i];
+      c[i] = _isObject(c[i]) && _isObject(b[i]) ? _merge(c[i], b[i]) : b[i];
     }
     return c;
   }
 
-  function tagWithProps(tag, props){
+  function _tagWithProps(tag, props){
     for(var i in props){
-      tag += ' ' + i + '="' + (isArray(props[i]) ? props[i].join(' ') : props[i]) + '"';
+      tag += ' ' + i + '="' + (_isArray(props[i]) ? props[i].join(' ') : props[i]) + '"';
     }
     return tag;
   }
 
+  function _contentTag(tag){
+    return function(props, content){
+      return this.contentTag(tag, props, content);
+    }
+  }
+
+  function _listTag(tag){
+    return function(props, content){
+      if(_isArray(content)){
+        for(var i = 0, l = content.length; i < l; i++){
+          content[i] = this.li({}, content[i]);
+        }
+        content = content.join('');
+      }
+      return this.contentTag(tag, props, content);
+    }
+  }
+
   var _defaults = {
-    form: { method: 'post', 'accept-charset': 'UTF-8' },
-    input: { type: 'text' }, a: { href: '#' },
-    button: { type: 'button' }
+    a: { href: '#' },
+    input: { type: 'text' },
+    button: { type: 'button' },
+    form: { method: 'post', 'accept-charset': 'UTF-8' }
   };
 
   var _fwDefaults = {
     bootstrap: {
       input: { class: 'form-control' },
+      select: { class: 'form-control' },
       textarea: { class: 'form-control' },
-      button: { class: 'btn' }
+      button: { class: 'btn btn-default' }
     }
   };
 
   var Tim = function(options){
-    if(isObject(options)){
+    if(_isObject(options)){
       var defaults = _defaults;
 
       if(options.framework){
-        defaults = merge(defaults, _fwDefaults[options.framework] || {});
+        defaults = _merge(defaults, _fwDefaults[options.framework] || {});
       }
 
-      if(isObject(options.defaults)){
-        defaults = merge(defaults, options.defaults);
+      if(_isObject(options.defaults)){
+        defaults = _merge(defaults, options.defaults);
       }
 
-      this.options = merge(options, { defaults: defaults });
+      this.options = _merge(options, { defaults: defaults });
     }else{
       this.options = { defaults: _defaults };
     }
   };
 
   Tim.prototype.tag = function(tag, props){
-    props = merge(this.options.defaults[tag], props);
-    return '<' + tagWithProps(tag, props) + '>';
+    props = _merge(this.options.defaults[tag], props || {});
+    return '<' + _tagWithProps(tag, props) + '>';
   };
 
   Tim.prototype.contentTag = function(tag, props, content){
-    props = merge(this.options.defaults[tag], props);
-    return '<' + tagWithProps(tag, props) + '>' + (content || '') + '</' + tag + '>';
-  };
-
-  Tim.prototype.div = function(props, content){
-    return this.contentTag('div', props, content);
-  };
-
-  Tim.prototype.ul = function(props, content){
-    if(isArray(content)){
-      for(var i = 0, l = content.length; i < l; i++){
-        content[i] = this.li({}, content[i]);
-      }
-      content = content.join('');
-    }
-    return this.contentTag('div', props, content);
-  };
-
-  Tim.prototype.li = function(props, content){
-    return this.contentTag('li', props, content);
-  };
-
-  Tim.prototype.form = function(props, content){
-    return this.contentTag('form', props, content);
-  };
-
-  Tim.prototype.label = function(props, content){
-    return this.contentTag('label', props, content);
+    props = _merge(this.options.defaults[tag], props || {});
+    return '<' + _tagWithProps(tag, props) + '>' + (content || '') + '</' + tag + '>';
   };
 
   Tim.prototype.input = function(props){
     return this.tag('input', props);
   };
 
-  Tim.prototype.textarea = function(props, content){
-    return this.contentTag('textarea', props, content);
+  Tim.prototype.a = _contentTag('a');
+  Tim.prototype.i = _contentTag('i');
+  Tim.prototype.li = _contentTag('li');
+  Tim.prototype.div = _contentTag('div');
+  Tim.prototype.span = _contentTag('span');
+  Tim.prototype.form = _contentTag('form');
+  Tim.prototype.label = _contentTag('label');
+  Tim.prototype.small = _contentTag('small');
+  Tim.prototype.strong = _contentTag('strong');
+  Tim.prototype.button = _contentTag('button');
+  Tim.prototype.option = _contentTag('option');
+  Tim.prototype.textarea = _contentTag('textarea');
+
+  Tim.prototype.ul = _listTag('ul');
+  Tim.prototype.ol = _listTag('ol');
+
+  Tim.prototype.select = function(props, content){
+    if(_isArray(content)) content = this.optionsForSelect(content);
+    return this.contentTag('select', props, content);
   };
 
-  Tim.prototype.a = function(props, content){
-    return this.contentTag('a', props, content);
-  };
-
-  Tim.prototype.span = function(props, content){
-    return this.contentTag('span', props, content);
-  };
-
-  Tim.prototype.small = function(props, content){
-    return this.contentTag('small', props, content);
-  };
-
-  Tim.prototype.i = function(props, content){
-    return this.contentTag('i', props, content);
+  Tim.prototype.optionsForSelect = function(options){
+    for(var i = 0, l = options.length; i < l; i++){
+      options[i] = _isArray(options[i]) ? this.option({ value: options[i][0] },
+        options[i][1]) : this.option({ value: options[i] }, options[i]);
+    }
+    return options.join('');
   };
 
   Tim.prototype.fa = function(icon, extras){
-    extras = extras && isArray(extras) ? ' fa-' + extras.join('fa-') : '';
+    extras = isArray(extras) ? ' fa-' + extras.join('fa-') : '';
     return this.i({ class: 'fa fa-' + icon + extras });
   }
 
