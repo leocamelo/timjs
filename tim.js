@@ -1,6 +1,6 @@
 var Tim = (function(){
   function _isObject(a){
-    return typeof a == 'object';
+    return a && a.constructor == Object;
   }
 
   function _isArray(a){
@@ -19,8 +19,11 @@ var Tim = (function(){
   }
 
   function _tagWithProps(tag, props){
+    var key, val;
     for(var i in props){
-      tag += ' ' + i + '="' + (_isArray(props[i]) ? props[i].join(' ') : props[i]) + '"';
+      key = i.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+      val = _isArray(props[i]) ? props[i].join(' ') : props[i];
+      tag += ' ' + key + '="' + val + '"';
     }
     return tag;
   }
@@ -64,7 +67,7 @@ var Tim = (function(){
       var defaults = _defaults;
 
       if(options.framework){
-        defaults = _merge(defaults, _fwDefaults[options.framework] || {});
+        defaults = _merge(defaults, _fwDefaults[options.framework]);
       }
 
       if(_isObject(options.defaults)){
@@ -78,12 +81,12 @@ var Tim = (function(){
   };
 
   Tim.prototype.tag = function(tag, props){
-    props = _merge(this.options.defaults[tag], props || {});
+    props = _merge(this.options.defaults[tag], props);
     return '<' + _tagWithProps(tag, props) + '>';
   };
 
   Tim.prototype.contentTag = function(tag, props, content){
-    props = _merge(this.options.defaults[tag], props || {});
+    props = _merge(this.options.defaults[tag], props);
     return '<' + _tagWithProps(tag, props) + '>' + (content || '') + '</' + tag + '>';
   };
 
@@ -114,14 +117,17 @@ var Tim = (function(){
 
   Tim.prototype.optionsForSelect = function(options){
     for(var i = 0, l = options.length; i < l; i++){
-      options[i] = _isArray(options[i]) ? this.option({ value: options[i][1] },
-        options[i][0]) : this.option({ value: options[i] }, options[i]);
+      if(_isArray(options[i])){
+        options[i] = this.option({ value: options[i][1] }, options[i][0]);
+      }else{
+        options[i] = this.option({ value: options[i] }, options[i]);
+      }
     }
     return options.join('');
   };
 
   Tim.prototype.fa = function(icon, extras){
-    extras = isArray(extras) ? ' fa-' + extras.join('fa-') : '';
+    extras = _isArray(extras) ? ' fa-' + extras.join(' fa-') : '';
     return this.i({ class: 'fa fa-' + icon + extras });
   }
 
