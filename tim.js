@@ -28,6 +28,10 @@ var Tim = (function(){
     return tag;
   }
 
+  function _convertNode(tim, node){
+    return _isArray(node) ? tim[node[0]](node[1], node[2]) : node;
+  }
+
   function _contentTag(tag){
     return function(props, content){
       return this.contentTag(tag, props, content);
@@ -38,7 +42,7 @@ var Tim = (function(){
     return function(props, content){
       if(_isArray(content)){
         for(var i = 0, l = content.length; i < l; i++){
-          content[i] = this.li({}, content[i]);
+          content[i] = this.li({}, _convertNode(this, content[i]));
         }
         content = content.join('');
       }
@@ -87,6 +91,12 @@ var Tim = (function(){
 
   Tim.prototype.contentTag = function(tag, props, content){
     props = _merge(this.options.defaults[tag], props);
+    if(_isArray(content)){
+      for(var i = 0, l = content.length; i < l; i++){
+        content[i] = _convertNode(this, content[i]);
+      }
+      content = content.join('');
+    }
     return '<' + _tagWithProps(tag, props) + '>' + (content || '') + '</' + tag + '>';
   };
 
