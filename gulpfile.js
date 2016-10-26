@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+
 var src = 'tim.js';
 
 gulp.task('uglify', function(){
