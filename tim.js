@@ -19,9 +19,9 @@
 
   function _map(arr, tim, fn){
     var i = -1;
-    var len = arr.length;
-    var res = new Array(len);
-    while(++i < len) res[i] = fn(tim, arr[i]);
+    var l = arr.length;
+    var res = new Array(l);
+    while(++i < l) res[i] = fn(tim, arr[i]);
     return res;
   }
 
@@ -48,6 +48,12 @@
 
   function _convertNode(tim, node){
     return _isArray(node) ? tim[node[0]](node[1], node[2]) : node;
+  }
+
+  function _tag(tag){
+    return function(props){
+      return this.tag(tag, props);
+    }
   }
 
   function _contentTag(tag){
@@ -117,9 +123,8 @@
     return "<" + _tagWithProps(tag, props) + ">" + (content || "") + "</" + tag + ">";
   };
 
-  Tim.prototype.input = function(props){
-    return this.tag("input", props);
-  };
+  Tim.prototype.img = _tag("img");
+  Tim.prototype.input = _tag("input");
 
   Tim.prototype.a = _contentTag("a");
   Tim.prototype.i = _contentTag("i");
@@ -152,11 +157,9 @@
 
   Tim.prototype.optionsForSelect = function(options){
     for(var i = 0, l = options.length; i < l; i++){
-      if(_isArray(options[i])){
-        options[i] = this.option({ value: options[i][1] }, options[i][0]);
-      }else{
-        options[i] = this.option({ value: options[i] }, options[i]);
-      }
+      options[i] = _isArray(options[i])
+        ? this.option({ value: options[i][1] }, options[i][0])
+        : this.option({ value: options[i] }, options[i]);
     }
     return options.join("");
   };
