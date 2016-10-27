@@ -1,14 +1,14 @@
+"use strict";
+
 (function(root, factory){
-  if(typeof exports === "object" && exports){
-    exports = factory();
+  if(typeof module !== "undefined" && typeof module.exports !== "undefined"){
+    module.exports = factory();
   }else if(typeof define === "function" && define.amd){
     define(["Tim"], factory);
   }else{
     root.Tim = factory();
   }
 }(this, function(){
-  "use strict";
-
   function _isObject(a){
     return a && a.constructor == Object;
   }
@@ -21,9 +21,7 @@
     var i = -1;
     var len = arr.length;
     var res = new Array(len);
-    while(++i < len){
-      res[i] = fn(tim, arr[i]);
-    }
+    while(++i < len) res[i] = fn(tim, arr[i]);
     return res;
   }
 
@@ -39,8 +37,8 @@
   }
 
   function _tagWithProps(tag, props){
-    var key, val;
-    for(var i in props){
+    var i, key, val;
+    for(i in props){
       key = i.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
       val = _isArray(props[i]) ? props[i].join(" ") : props[i];
       tag += " " + key + "=\"" + val + "\"";
@@ -102,7 +100,7 @@
     }else{
       this.options = { defaults: _defaults };
     }
-  };
+  }
 
   Tim.prototype.do = function(content){
     return _map(content, this, _convertNode).join("");
