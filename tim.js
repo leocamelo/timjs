@@ -174,6 +174,12 @@
       props = b || {};
       props.src = props.src || a;
     }
+    if(props && props.size){
+      var size = props.size.split('x');
+      props.width = props.width || size[0];
+      props.height = props.height || size[1];
+      delete props.size;
+    }
     return this.tag("img", props);
   };
 
