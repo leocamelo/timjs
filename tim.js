@@ -1,7 +1,8 @@
 "use strict";
 
 (function(root, factory){
-  if(typeof module !== "undefined" && typeof module.exports !== "undefined"){
+  if(typeof module !== "undefined" &&
+     typeof module.exports !== "undefined"){
     module.exports = factory();
   }else if(typeof define === "function" && define.amd){
     define(["Tim"], factory);
@@ -123,10 +124,8 @@
     return "<" + _tagWithProps(tag, props) + ">" + (content || "") + "</" + tag + ">";
   };
 
-  Tim.prototype.img = _tag("img");
   Tim.prototype.input = _tag("input");
 
-  Tim.prototype.a = _contentTag("a");
   Tim.prototype.i = _contentTag("i");
   Tim.prototype.h1 = _contentTag("h1");
   Tim.prototype.h2 = _contentTag("h2");
@@ -149,6 +148,28 @@
 
   Tim.prototype.ul = _listTag("ul");
   Tim.prototype.ol = _listTag("ol");
+
+  Tim.prototype.a = function(){
+    var args = arguments;
+    var props = args[0];
+    var content = args[1];
+    if(args.length == 3){
+      props = args[1];
+      content = args[2];
+      props.href = props.href || args[0];
+    }
+    return this.contentTag("a", props, content);
+  };
+
+  Tim.prototype.img = function(){
+    var args = arguments;
+    var props = args[0];
+    if(args.length == 2){
+      props = args[1];
+      props.src = props.src || args[0];
+    }
+    return this.tag("img", props);
+  };
 
   Tim.prototype.select = function(props, content){
     if(_isArray(content)) content = this.optionsForSelect(content);
