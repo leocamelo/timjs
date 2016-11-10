@@ -10,6 +10,10 @@
     root.Tim = factory();
   }
 }(this, function(){
+  function _isUndefined(a){
+    return typeof a == "undefined";
+  }
+
   function _isObject(a){
     return a && a.constructor == Object;
   }
@@ -149,24 +153,26 @@
   Tim.prototype.ul = _listTag("ul");
   Tim.prototype.ol = _listTag("ol");
 
-  Tim.prototype.a = function(){
-    var args = arguments;
-    var props = args[0];
-    var content = args[1];
-    if(args.length == 3){
-      props = args[1];
-      content = args[2];
-      props.href = props.href || args[0];
+  Tim.prototype.a = function(a, b, c){
+    var props, content;
+    if(_isUndefined(a) || _isObject(a)){
+      props = a;
+      content = b;
+    }else{
+      props = b || {};
+      props.href = props.href || a;
+      content = c;
     }
     return this.contentTag("a", props, content);
   };
 
-  Tim.prototype.img = function(){
-    var args = arguments;
-    var props = args[0];
-    if(args.length == 2){
-      props = args[1];
-      props.src = props.src || args[0];
+  Tim.prototype.img = function(a, b){
+    var props;
+    if(_isUndefined(a) || _isObject(a)){
+      props = a;
+    }else{
+      props = b || {};
+      props.src = props.src || a;
     }
     return this.tag("img", props);
   };
