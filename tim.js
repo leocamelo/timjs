@@ -1,8 +1,5 @@
-"use strict";
-
 (function(root, factory){
-  if(typeof module !== "undefined" &&
-     typeof module.exports !== "undefined"){
+  if(typeof module !== "undefined" && typeof module.exports !== "undefined"){
     module.exports = factory();
   }else if(typeof define === "function" && define.amd){
     define(["Tim"], factory);
@@ -10,6 +7,8 @@
     root.Tim = factory();
   }
 }(this, function(){
+  "use strict";
+
   function _isUndefined(a){
     return typeof a == "undefined";
   }
@@ -22,32 +21,41 @@
     return a && a.constructor == Array;
   }
 
+  function _kebabCase(str){
+    return str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+  }
+
+  function _each(obj, fn){
+    for(var k in obj){
+      if(obj.hasOwnProperty(k)) fn(k, obj[k]);
+    }
+  }
+
   function _map(arr, tim, fn){
     var i = -1;
     var l = arr.length;
     var res = new Array(l);
     while(++i < l) res[i] = fn(tim, arr[i]);
-    return res;
+    return res.join("");
   }
 
   function _merge(a, b){
-    var i, c = {};
-    for(i in a){
-      c[i] = a[i];
-    }
-    for(i in b){
-      c[i] = _isObject(c[i]) && _isObject(b[i]) ? _merge(c[i], b[i]) : b[i];
-    }
+    var c = {};
+    _each(a, function(ak, av){
+      c[ak] = av;
+    });
+    _each(b, function(bk, bv){
+      c[bk] = _isObject(c[bk]) && _isObject(bv) ? _merge(c[bk], bv) : bv;
+    });
     return c;
   }
 
   function _tagWithProps(tag, props){
-    var i, key, val;
-    for(i in props){
-      key = i.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-      val = _isArray(props[i]) ? props[i].join(" ") : props[i];
-      tag += " " + key + "=\"" + val + "\"";
-    }
+    _each(props, function(k, v){
+      var pKey = _kebabCase(k);
+      var pVal = _isArray(v) ? v.join(" ") : v;
+      tag += " " + pKey + "=\"" + pVal + "\"";
+    });
     return tag;
   }
 
@@ -58,25 +66,24 @@
   function _tag(tag){
     return function(props){
       return this.tag(tag, props);
-    }
+    };
   }
 
   function _contentTag(tag){
     return function(props, content){
       return this.contentTag(tag, props, content);
-    }
+    };
   }
 
   function _listTag(tag){
     return function(props, content){
       if(_isArray(content)){
-        var liGen = function(tim, li){
+        content = _map(content, this, function(tim, li){
           return tim.li({}, _convertNode(tim, li));
-        };
-        content = _map(content, this, liGen).join("");
+        });
       }
       return this.contentTag(tag, props, content);
-    }
+    };
   }
 
   var _defaults = {
@@ -114,7 +121,7 @@
   }
 
   Tim.prototype.do = function(content){
-    return _map(content, this, _convertNode).join("");
+    return _map(content, this, _convertNode);
   };
 
   Tim.prototype.tag = function(tag, props){
@@ -189,12 +196,11 @@
   };
 
   Tim.prototype.optionsForSelect = function(options){
-    for(var i = 0, l = options.length; i < l; i++){
-      options[i] = _isArray(options[i])
-        ? this.option({ value: options[i][1] }, options[i][0])
-        : this.option({ value: options[i] }, options[i]);
-    }
-    return options.join("");
+    return _map(options, this, function(tim, option){
+      return _isArray(option)
+        ? tim.option({ value: option[1] }, option[0])
+        : tim.option({ value: option }, option);
+    });
   };
 
   Tim.prototype.fa = function(icon, extras){

@@ -7,7 +7,7 @@
   "author": "Leonardo Camelo <leonardocamelo.nave@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/leonardocamelo/timjs.git"
+    "url": "git+https://github.com/leocamelo/timjs.git"
   },
   "keywords": [
     "tim",
@@ -15,9 +15,9 @@
     "javascript"
   ],
   "bugs": {
-    "url": "https://github.com/leonardocamelo/timjs/issues"
+    "url": "https://github.com/leocamelo/timjs/issues"
   },
-  "homepage": "https://github.com/leonardocamelo/timjs#readme",
+  "homepage": "https://github.com/leocamelo/timjs#readme",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
