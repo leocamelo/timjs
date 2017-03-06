@@ -55,15 +55,16 @@
   }
 
   function _tagWithProps(tag, props){
-    return tag + _map(props, function(k, v){
+    _each(props, function(k, v){
       var pKey = _kebabCase(k);
       if(_isBoolean(v)){
-        return v ? (" " + pKey) : "";
+        tag += v ? (" " + pKey) : "";
       }else{
-        var pVal = (_isArray(v) ? v.join(" ") : v);
-        return " " + pKey + "=\"" + pVal + "\"";
+        var pVal = _isArray(v) ? v.join(" ") : v;
+        tag += " " + pKey + "=\"" + pVal + "\"";
       }
     });
+    return tag;
   }
 
   function _convertNode(tim, node){
