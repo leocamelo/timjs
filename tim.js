@@ -13,6 +13,10 @@
     return typeof a == "undefined";
   }
 
+  function _isBoolean(a){
+    return typeof a == "boolean";
+  }
+
   function _isObject(a){
     return a && a.constructor == Object;
   }
@@ -51,12 +55,15 @@
   }
 
   function _tagWithProps(tag, props){
-    _each(props, function(k, v){
+    return tag + _map(props, function(k, v){
       var pKey = _kebabCase(k);
-      var pVal = _isArray(v) ? v.join(" ") : v;
-      tag += " " + pKey + "=\"" + pVal + "\"";
+      if(_isBoolean(v)){
+        return v ? (" " + pKey) : "";
+      }else{
+        var pVal = (_isArray(v) ? v.join(" ") : v);
+        return " " + pKey + "=\"" + pVal + "\"";
+      }
     });
-    return tag;
   }
 
   function _convertNode(tim, node){
