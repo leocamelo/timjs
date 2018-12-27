@@ -1,44 +1,31 @@
-(function(root, factory) {
-  function defined(a) {
-    return typeof a != "undefined";
-  }
-
-  if (defined(module) && defined(module.exports)) {
-    module.exports = factory();
-  } else if (typeof define == "function" && define.amd) {
-    define(["Tim"], factory);
-  } else {
-    root.Tim = factory();
-  }
-}(this, function() {
+(function (root, factory) {
+  function i(v, t) { return typeof v === t; }
+  i(exports, "object") && !i(module, "undefined") ? module.exports = factory()
+  : i(define, "function") && define.amd ? define(["Tim"], factory)
+  : root.Tim = factory();
+}(this, function () {
   "use strict";
 
   function _isUndefined(a) {
     return typeof a == "undefined";
   }
-
   function _isBoolean(a) {
     return typeof a == "boolean";
   }
-
   function _isObject(a) {
     return a && a.constructor == Object;
   }
-
   function _isArray(a) {
     return a && a.constructor == Array;
   }
-
   function _kebabCase(str) {
     return str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
   }
-
   function _each(obj, fn) {
     for (var k in obj) {
       if (obj.hasOwnProperty(k)) fn(k, obj[k]);
     }
   }
-
   function _map(arr, tim, fn) {
     var i = -1;
     var l = arr.length;
@@ -46,20 +33,18 @@
     while (++i < l) res[i] = fn(tim, arr[i]);
     return res.join("");
   }
-
   function _merge(a, b) {
     var c = {};
-    _each(a, function(ak, av) {
+    _each(a, function (ak, av) {
       c[ak] = av;
     });
-    _each(b, function(bk, bv) {
+    _each(b, function (bk, bv) {
       c[bk] = _isObject(c[bk]) && _isObject(bv) ? _merge(c[bk], bv) : bv;
     });
     return c;
   }
-
   function _tagWithProps(tag, props) {
-    _each(props, function(k, v) {
+    _each(props, function (k, v) {
       var pKey = _kebabCase(k);
       if (_isBoolean(v)) {
         tag += v ? (" " + pKey) : "";
@@ -70,27 +55,23 @@
     });
     return tag;
   }
-
   function _convertNode(tim, node) {
     return _isArray(node) ? tim[node[0]](node[1], node[2]) : node;
   }
-
   function _tag(tag) {
-    return function(props) {
+    return function (props) {
       return this.tag(tag, props);
     };
   }
-
   function _contentTag(tag) {
-    return function(props, content) {
+    return function (props, content) {
       return this.contentTag(tag, props, content);
     };
   }
-
   function _listTag(tag) {
-    return function(props, content) {
+    return function (props, content) {
       if (_isArray(content)) {
-        content = _map(content, this, function(tim, li) {
+        content = _map(content, this, function (tim, li) {
           return tim.li({}, _convertNode(tim, li));
         });
       }
@@ -132,16 +113,16 @@
     }
   }
 
-  Tim.prototype.do = function(content) {
+  Tim.prototype.do = function (content) {
     return _map(content, this, _convertNode);
   };
 
-  Tim.prototype.tag = function(tag, props) {
+  Tim.prototype.tag = function (tag, props) {
     props = _merge(this.options.defaults[tag], props);
     return "<" + _tagWithProps(tag, props) + ">";
   };
 
-  Tim.prototype.contentTag = function(tag, props, content) {
+  Tim.prototype.contentTag = function (tag, props, content) {
     props = _merge(this.options.defaults[tag], props);
     if (_isArray(content)) content = this.do(content);
     return "<" + _tagWithProps(tag, props) + ">" + (content || "") + "</" + tag + ">";
@@ -172,7 +153,7 @@
   Tim.prototype.ul = _listTag("ul");
   Tim.prototype.ol = _listTag("ol");
 
-  Tim.prototype.a = function(a, b, c) {
+  Tim.prototype.a = function (a, b, c) {
     var props, content;
     if (_isUndefined(a) || _isObject(a)) {
       props = a;
@@ -185,7 +166,7 @@
     return this.contentTag("a", props, content);
   };
 
-  Tim.prototype.img = function(a, b) {
+  Tim.prototype.img = function (a, b) {
     var props;
     if (_isUndefined(a) || _isObject(a)) {
       props = a;
@@ -202,21 +183,16 @@
     return this.tag("img", props);
   };
 
-  Tim.prototype.select = function(props, content) {
+  Tim.prototype.select = function (props, content) {
     if (_isArray(content)) content = this.optionsForSelect(content);
     return this.contentTag("select", props, content);
   };
 
-  Tim.prototype.optionsForSelect = function(options) {
-    return _map(options, this, function(tim, option) {
+  Tim.prototype.optionsForSelect = function (options) {
+    return _map(options, this, function (tim, option) {
       if (_isArray(option)) return tim.option({ value: option[1] }, option[0]);
       return tim.option({ value: option }, option);
     });
-  };
-
-  Tim.prototype.fa = function(icon, extras) {
-    extras = _isArray(extras) ? " fa-" + extras.join(" fa-") : "";
-    return this.i({ class: "fa fa-" + icon + extras });
   };
 
   return Tim;
