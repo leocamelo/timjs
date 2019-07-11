@@ -4,13 +4,13 @@ var rename = require("gulp-rename");
 
 var src = "tim.js";
 
-gulp.task("uglify", function () {
-  gulp.src(src)
-  .pipe(uglify())
-  .pipe(rename({ extname: ".min.js" }))
-  .pipe(gulp.dest('./'));
-});
+function js() {
+  return gulp
+    .src(src)
+    .pipe(uglify())
+    .pipe(rename({ extname: ".min.js" }))
+    .pipe(gulp.dest("./"));
+}
 
-gulp.task("default", ["uglify"], function () {
-  gulp.watch(src, ["uglify"]);
-});
+exports.js = js;
+exports.default = js;
