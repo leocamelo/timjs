@@ -1,10 +1,10 @@
 {
   "name": "timjs",
   "main": "tim.js",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A tiny library for generate html strings",
   "license": "MIT",
-  "author": "Leonardo Camelo <leonardocamelo.nave@gmail.com>",
+  "author": "@leocamelo <leonardocamelo.nave@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leocamelo/timjs.git"
