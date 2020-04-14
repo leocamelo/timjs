@@ -17,10 +17,5 @@
   "bugs": {
     "url": "https://github.com/leocamelo/timjs/issues"
   },
-  "homepage": "https://github.com/leocamelo/timjs#readme",
-  "devDependencies": {
-    "gulp": "^4.0.2",
-    "gulp-rename": "^1.4.0",
-    "gulp-uglify": "^3.0.2"
-  }
+  "homepage": "https://github.com/leocamelo/timjs#readme"
 }
